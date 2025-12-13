@@ -1,0 +1,32 @@
+.indicator {
+  position: absolute;
+  bottom: var(--spacing-xl);
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: fit-content;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text);
+  z-index: 10;
+}
+
+.circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border: 2px solid var(--glass-border);
+  border-radius: 50%;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  transition: all var(--transition-base);
+}
+
+.indicator:hover .circle {
+  background: var(--glass-bg-hover);
+  border-color: var(--glass-border-hover);
+}
