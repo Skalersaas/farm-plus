@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { format } from 'date-fns';
 import { Plus, Search, Droplets, Leaf, Bug, Pill, Sun, Wrench, Eye, PenSquare } from 'lucide-react';
 import { useUIStore, useFieldsStore, usePlantsStore } from '../../../stores';
-import type { NoteType } from '../../../types';
+import { NoteForm } from './NoteForm';
+import type { NoteType, Note } from '../../../types';
 import styles from './NotesJournal.module.css';
 
 const noteTypeIcons: Record<NoteType, typeof Droplets> = {
@@ -35,6 +36,8 @@ export function NotesJournal() {
   const { getPlantById } = usePlantsStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('');
+  const [showForm, setShowForm] = useState(false);
+  const [editingNote, setEditingNote] = useState<Note | null>(null);
 
   const filteredNotes = notes
     .filter((note) => {
@@ -45,6 +48,16 @@ export function NotesJournal() {
       return matchesSearch && matchesType;
     })
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+  const handleAddClick = () => {
+    setEditingNote(null);
+    setShowForm(true);
+  };
+
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setEditingNote(null);
+  };
 
   return (
     <div className={styles.container}>
@@ -80,7 +93,7 @@ export function NotesJournal() {
           </select>
         </div>
 
-        <button className={styles.addBtn}>
+        <button className={styles.addBtn} onClick={handleAddClick}>
           <Plus size={18} />
           Add Note
         </button>
@@ -138,11 +151,16 @@ export function NotesJournal() {
         <div className={styles.empty}>
           <PenSquare size={48} className={styles.emptyIcon} />
           <p>No notes found</p>
-          <button className={styles.addBtn}>
+          <button className={styles.addBtn} onClick={handleAddClick}>
             <Plus size={18} />
             Add Your First Note
           </button>
         </div>
+      )}
+
+      {/* Form Modal */}
+      {showForm && (
+        <NoteForm note={editingNote} onClose={handleCloseForm} />
       )}
     </div>
   );

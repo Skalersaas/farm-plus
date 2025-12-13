@@ -100,6 +100,12 @@
 .collapsed .navItem {
   justify-content: center;
   padding: var(--spacing-sm);
+  gap: 0;
+}
+
+.collapsed .logo {
+  justify-content: center;
+  padding: var(--spacing-sm);
 }
 
 .divider {

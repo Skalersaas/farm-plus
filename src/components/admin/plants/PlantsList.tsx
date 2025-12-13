@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Search, Leaf, Droplets, Eye } from 'lucide-react';
+import { Plus, Search, Leaf, Droplets, Eye, Edit } from 'lucide-react';
 import { usePlantsStore, useFieldsStore } from '../../../stores';
+import { PlantForm } from './PlantForm';
 import { formatDistanceToNow } from 'date-fns';
-import type { WateringStatus } from '../../../types';
+import type { Plant, WateringStatus } from '../../../types';
 import styles from './PlantsList.module.css';
 
 const wateringStatusLabels: Record<WateringStatus, string> = {
@@ -26,6 +27,8 @@ export function PlantsList() {
   const [searchQuery, setSearchQuery] = useState('');
   const [fieldFilter, setFieldFilter] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('');
+  const [showForm, setShowForm] = useState(false);
+  const [editingPlant, setEditingPlant] = useState<Plant | null>(null);
 
   const filteredPlants = plants.filter((plant) => {
     const matchesSearch = plant.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -36,6 +39,21 @@ export function PlantsList() {
 
   const handleWater = (plantId: string) => {
     waterPlant(plantId);
+  };
+
+  const handleAddClick = () => {
+    setEditingPlant(null);
+    setShowForm(true);
+  };
+
+  const handleEditClick = (plant: Plant) => {
+    setEditingPlant(plant);
+    setShowForm(true);
+  };
+
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setEditingPlant(null);
   };
 
   return (
@@ -81,7 +99,7 @@ export function PlantsList() {
         </div>
 
         <div className={styles.actions}>
-          <button className={styles.addBtn}>
+          <button className={styles.addBtn} onClick={handleAddClick}>
             <Plus size={18} />
             Add Plant
           </button>
@@ -127,6 +145,7 @@ export function PlantsList() {
                     <span className={styles.statLabel}>Health</span>
                     <span
                       className={`${styles.healthBadge} ${styles[plant.healthStatus]}`}
+                      title={plant.healthStatus}
                     >
                       {plant.healthStatus}
                     </span>
@@ -156,6 +175,13 @@ export function PlantsList() {
                     <Eye size={14} />
                     View
                   </Link>
+                  <button
+                    className={styles.editBtn}
+                    onClick={() => handleEditClick(plant)}
+                  >
+                    <Edit size={14} />
+                    Edit
+                  </button>
                   {plant.wateringStatus !== 'watered' && (
                     <button
                       className={styles.waterBtn}
@@ -173,11 +199,16 @@ export function PlantsList() {
       ) : (
         <div className={styles.empty}>
           <p>No plants found. Add your first plant to get started!</p>
-          <button className={styles.addBtn}>
+          <button className={styles.addBtn} onClick={handleAddClick}>
             <Plus size={18} />
             Add Plant
           </button>
         </div>
+      )}
+
+      {/* Form Modal */}
+      {showForm && (
+        <PlantForm plant={editingPlant} onClose={handleCloseForm} />
       )}
     </div>
   );

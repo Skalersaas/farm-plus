@@ -110,10 +110,13 @@ export function ReportsPage() {
                 <YAxis stroke="#888" fontSize={12} />
                 <Tooltip
                   contentStyle={{
-                    background: 'rgba(0,0,0,0.8)',
+                    background: 'rgba(0,0,0,0.9)',
                     border: '1px solid rgba(255,255,255,0.2)',
                     borderRadius: '8px',
                   }}
+                  labelStyle={{ color: '#fff' }}
+                  itemStyle={{ color: '#fff' }}
+                  cursor={{ fill: 'rgba(255,255,255,0.1)' }}
                 />
                 <Bar dataKey="plants" fill="#8B5A2B" radius={[4, 4, 0, 0]} />
               </BarChart>
@@ -142,10 +145,12 @@ export function ReportsPage() {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    background: 'rgba(0,0,0,0.8)',
+                    background: 'rgba(0,0,0,0.9)',
                     border: '1px solid rgba(255,255,255,0.2)',
                     borderRadius: '8px',
                   }}
+                  labelStyle={{ color: '#fff' }}
+                  itemStyle={{ color: '#fff' }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -171,10 +176,12 @@ export function ReportsPage() {
                 <YAxis stroke="#888" fontSize={12} />
                 <Tooltip
                   contentStyle={{
-                    background: 'rgba(0,0,0,0.8)',
+                    background: 'rgba(0,0,0,0.9)',
                     border: '1px solid rgba(255,255,255,0.2)',
                     borderRadius: '8px',
                   }}
+                  labelStyle={{ color: '#fff' }}
+                  itemStyle={{ color: '#fff' }}
                 />
                 <Line
                   type="monotone"
@@ -209,10 +216,12 @@ export function ReportsPage() {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    background: 'rgba(0,0,0,0.8)',
+                    background: 'rgba(0,0,0,0.9)',
                     border: '1px solid rgba(255,255,255,0.2)',
                     borderRadius: '8px',
                   }}
+                  labelStyle={{ color: '#fff' }}
+                  itemStyle={{ color: '#fff' }}
                 />
               </PieChart>
             </ResponsiveContainer>

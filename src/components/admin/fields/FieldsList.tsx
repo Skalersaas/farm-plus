@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Grid, List, Search, Edit, Trash2, Eye } from 'lucide-react';
 import { useFieldsStore } from '../../../stores';
+import { FieldForm } from './FieldForm';
 import type { Field } from '../../../types';
 import styles from './FieldsList.module.css';
 
@@ -9,6 +10,8 @@ export function FieldsList() {
   const { fields, deleteField } = useFieldsStore();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showForm, setShowForm] = useState(false);
+  const [editingField, setEditingField] = useState<Field | null>(null);
 
   const filteredFields = fields.filter((field) =>
     field.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -25,6 +28,21 @@ export function FieldsList() {
       default:
         return '';
     }
+  };
+
+  const handleAddClick = () => {
+    setEditingField(null);
+    setShowForm(true);
+  };
+
+  const handleEditClick = (field: Field) => {
+    setEditingField(field);
+    setShowForm(true);
+  };
+
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setEditingField(null);
   };
 
   return (
@@ -58,7 +76,7 @@ export function FieldsList() {
             </button>
           </div>
 
-          <button className={styles.addBtn}>
+          <button className={styles.addBtn} onClick={handleAddClick}>
             <Plus size={18} />
             Add Field
           </button>
@@ -93,11 +111,14 @@ export function FieldsList() {
               </div>
 
               <div className={styles.cardFooter}>
-                <Link to={`/admin/fields/${field.id}`} className={styles.viewBtn}>
+                <Link to={`/admin/fields/${field.id}`} className={styles.viewLink}>
                   <Eye size={16} />
                   View
                 </Link>
-                <button className={styles.iconBtn}>
+                <button
+                  className={styles.iconBtn}
+                  onClick={() => handleEditClick(field)}
+                >
                   <Edit size={16} />
                 </button>
                 <button
@@ -113,11 +134,16 @@ export function FieldsList() {
       ) : (
         <div className={styles.empty}>
           <p>No fields found. Create your first field to get started!</p>
-          <button className={styles.addBtn}>
+          <button className={styles.addBtn} onClick={handleAddClick}>
             <Plus size={18} />
             Add Field
           </button>
         </div>
+      )}
+
+      {/* Form Modal */}
+      {showForm && (
+        <FieldForm field={editingField} onClose={handleCloseForm} />
       )}
     </div>
   );

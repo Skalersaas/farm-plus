@@ -1,18 +1,23 @@
-import { useState } from 'react';
-import { User, Building2, Bell, Palette, Save } from 'lucide-react';
-import { useUIStore } from '../../../stores';
+import { useState, useEffect } from 'react';
+import { User, Building2, Bell, Save } from 'lucide-react';
 import styles from './SettingsPage.module.css';
 
-type SettingsTab = 'profile' | 'farm' | 'notifications' | 'display';
+type SettingsTab = 'profile' | 'farm' | 'notifications';
+
+interface CurrentUser {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+}
 
 export function SettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
-  const { theme, setTheme } = useUIStore();
 
   const [profileData, setProfileData] = useState({
-    name: 'John Doe',
-    email: 'john@farmplus.com',
-    phone: '+1 234 567 890',
+    name: '',
+    email: '',
+    phone: '',
   });
 
   const [farmData, setFarmData] = useState({
@@ -29,15 +34,57 @@ export function SettingsPage() {
     weeklyReport: false,
   });
 
+  // Load current user data on mount
+  useEffect(() => {
+    const currentUserStr = localStorage.getItem('farm-plus-current-user');
+    if (currentUserStr) {
+      try {
+        const currentUser: CurrentUser = JSON.parse(currentUserStr);
+        setProfileData({
+          name: currentUser.name || '',
+          email: currentUser.email || '',
+          phone: currentUser.phone || '',
+        });
+      } catch {
+        // If parsing fails, use defaults
+      }
+    }
+  }, []);
+
   const tabs = [
     { id: 'profile' as const, label: 'Profile', icon: User },
     { id: 'farm' as const, label: 'Farm Settings', icon: Building2 },
     { id: 'notifications' as const, label: 'Notifications', icon: Bell },
-    { id: 'display' as const, label: 'Display', icon: Palette },
   ];
 
   const handleSave = () => {
-    alert('Settings saved! (In a real app, this would persist to backend)');
+    // Update current user in localStorage
+    const currentUserStr = localStorage.getItem('farm-plus-current-user');
+    if (currentUserStr) {
+      try {
+        const currentUser = JSON.parse(currentUserStr);
+        const updatedUser = {
+          ...currentUser,
+          name: profileData.name,
+          email: profileData.email,
+          phone: profileData.phone,
+        };
+        localStorage.setItem('farm-plus-current-user', JSON.stringify(updatedUser));
+
+        // Also update in users array
+        const usersStr = localStorage.getItem('farm-plus-users');
+        if (usersStr) {
+          const users = JSON.parse(usersStr);
+          const updatedUsers = users.map((u: CurrentUser) =>
+            u.id === currentUser.id ? updatedUser : u
+          );
+          localStorage.setItem('farm-plus-users', JSON.stringify(updatedUsers));
+        }
+      } catch {
+        // Handle error silently
+      }
+    }
+    alert('Settings saved successfully!');
   };
 
   return (
@@ -199,33 +246,6 @@ export function SettingsPage() {
                 >
                   <span className={styles.toggleKnob} />
                 </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'display' && (
-          <div className={styles.section}>
-            <h2 className={styles.sectionTitle}>Display Settings</h2>
-            <div className={styles.form}>
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Theme</label>
-                <div className={styles.themeOptions}>
-                  <button
-                    className={`${styles.themeBtn} ${theme === 'dark' ? styles.active : ''}`}
-                    onClick={() => setTheme('dark')}
-                  >
-                    <div className={styles.themeSwatch} style={{ background: '#1a1a2e' }} />
-                    Dark
-                  </button>
-                  <button
-                    className={`${styles.themeBtn} ${theme === 'light' ? styles.active : ''}`}
-                    onClick={() => setTheme('light')}
-                  >
-                    <div className={styles.themeSwatch} style={{ background: '#f8fafc' }} />
-                    Light
-                  </button>
-                </div>
               </div>
             </div>
           </div>

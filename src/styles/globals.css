@@ -155,3 +155,32 @@ img {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-primary-light);
 }
+
+/* Custom Select Styling */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.7)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px !important;
+  cursor: pointer;
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+select option {
+  background: #1a1a2e;
+  color: #ffffff;
+  padding: 12px;
+}
+
+select option:hover,
+select option:focus,
+select option:checked {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #ffffff;
+}
