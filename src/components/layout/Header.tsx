@@ -28,7 +28,7 @@ export function Header({ onLoginClick, onSignUpClick }: HeaderProps) {
     <header className={styles.header}>
       <div className={styles.container}>
         <a href="#home" className={styles.logo}>
-          ICON
+          <img src="/logo.png" alt="Farm+" className={styles.logoImg} />
         </a>
 
         {/* Desktop Navigation */}

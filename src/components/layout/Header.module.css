@@ -17,11 +17,15 @@
 }
 
 .logo {
-  font-size: var(--font-size-xl);
-  font-weight: 300;
-  letter-spacing: 0.2em;
-  color: var(--color-text);
+  display: flex;
+  align-items: center;
   text-decoration: none;
+}
+
+.logoImg {
+  height: 56px;
+  width: auto;
+  object-fit: contain;
 }
 
 .nav {

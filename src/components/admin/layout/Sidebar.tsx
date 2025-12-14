@@ -9,7 +9,6 @@ import {
   Grid3X3,
   Settings,
   ChevronLeft,
-  Sprout,
 } from 'lucide-react';
 import { useUIStore } from '../../../stores';
 import styles from './Sidebar.module.css';
@@ -35,9 +34,7 @@ export function Sidebar() {
     <aside className={`${styles.sidebar} ${sidebarCollapsed ? styles.collapsed : ''}`}>
       {/* Logo */}
       <div className={styles.logo}>
-        <div className={styles.logoIcon}>
-          <Sprout size={24} />
-        </div>
+        <img src="/logo.png" alt="Farm+" className={styles.logoImg} />
         <span className={styles.logoText}>Farm+</span>
       </div>
 
