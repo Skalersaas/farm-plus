@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
+import { ChatWidget } from '../../chat';
 import { useUIStore, useFieldsStore, usePlantsStore } from '../../../stores';
 import { defaultPlantTypes, sampleFields, samplePlants } from '../../../services/seedData';
 import styles from './AdminLayout.module.css';
@@ -60,6 +61,9 @@ export function AdminLayout() {
           <Outlet />
         </div>
       </main>
+
+      {/* Chat Support Widget */}
+      <ChatWidget />
     </div>
   );
 }

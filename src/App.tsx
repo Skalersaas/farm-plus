@@ -11,6 +11,7 @@ const FieldsList = lazy(() => import('./components/admin/fields/FieldsList'));
 const FieldDetail = lazy(() => import('./components/admin/fields/FieldDetail'));
 const PlantsList = lazy(() => import('./components/admin/plants/PlantsList'));
 const PlantDetail = lazy(() => import('./components/admin/plants/PlantDetail'));
+const VirtualMap = lazy(() => import('./components/admin/map/VirtualMap'));
 const Calendar = lazy(() => import('./components/admin/calendar/Calendar'));
 const NotesJournal = lazy(() => import('./components/admin/notes/NotesJournal'));
 const ReportsPage = lazy(() => import('./components/admin/reports/ReportsPage'));
@@ -48,6 +49,7 @@ function App() {
           <Route path="fields/:id" element={<FieldDetail />} />
           <Route path="plants" element={<PlantsList />} />
           <Route path="plants/:id" element={<PlantDetail />} />
+          <Route path="map" element={<VirtualMap />} />
           <Route path="calendar" element={<Calendar />} />
           <Route path="notes" element={<NotesJournal />} />
           <Route path="reports" element={<ReportsPage />} />

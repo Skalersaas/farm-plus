@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { Plus, Search, Droplets, Leaf, Bug, Pill, Sun, Wrench, Eye, PenSquare } from 'lucide-react';
+import { Plus, Search, Droplets, Leaf, Bug, Pill, Sun, Wrench, Eye, PenSquare, FileText } from 'lucide-react';
 import { useUIStore, useFieldsStore, usePlantsStore } from '../../../stores';
+import { Dropdown } from '../../ui';
+import type { DropdownOption } from '../../ui';
 import { NoteForm } from './NoteForm';
 import type { NoteType, Note } from '../../../types';
 import styles from './NotesJournal.module.css';
@@ -29,6 +31,19 @@ const noteTypeColors: Record<NoteType, string> = {
   observation: '#64748b',
   harvest: '#eab308',
 };
+
+const noteTypeOptions: DropdownOption[] = [
+  { value: '', label: 'All Types', icon: <FileText size={16} /> },
+  { value: 'watering', label: 'Watering', icon: <Droplets size={16} /> },
+  { value: 'growth', label: 'Growth', icon: <Leaf size={16} /> },
+  { value: 'pest', label: 'Pest', icon: <Bug size={16} /> },
+  { value: 'disease', label: 'Disease', icon: <Pill size={16} /> },
+  { value: 'fertilizer', label: 'Fertilizer', icon: <Pill size={16} /> },
+  { value: 'weather', label: 'Weather', icon: <Sun size={16} /> },
+  { value: 'work', label: 'Work', icon: <Wrench size={16} /> },
+  { value: 'observation', label: 'Observation', icon: <Eye size={16} /> },
+  { value: 'harvest', label: 'Harvest', icon: <Leaf size={16} /> },
+];
 
 export function NotesJournal() {
   const { notes } = useUIStore();
@@ -75,22 +90,12 @@ export function NotesJournal() {
             />
           </div>
 
-          <select
+          <Dropdown
+            options={noteTypeOptions}
             value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
-            className={styles.filterSelect}
-          >
-            <option value="">All Types</option>
-            <option value="watering">Watering</option>
-            <option value="growth">Growth</option>
-            <option value="pest">Pest</option>
-            <option value="disease">Disease</option>
-            <option value="fertilizer">Fertilizer</option>
-            <option value="weather">Weather</option>
-            <option value="work">Work</option>
-            <option value="observation">Observation</option>
-            <option value="harvest">Harvest</option>
-          </select>
+            onChange={setTypeFilter}
+            placeholder="All Types"
+          />
         </div>
 
         <button className={styles.addBtn} onClick={handleAddClick}>

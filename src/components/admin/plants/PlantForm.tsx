@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Leaf, Map } from 'lucide-react';
 import { usePlantsStore, useFieldsStore } from '../../../stores';
+import { Dropdown } from '../../ui';
+import type { DropdownOption } from '../../ui';
 import type { Plant, PlantHealthStatus, WateringStatus } from '../../../types';
 import styles from './PlantForm.module.css';
 
@@ -41,6 +43,31 @@ export function PlantForm({ plant, onClose }: PlantFormProps) {
       });
     }
   }, [plant]);
+
+  // Build dropdown options
+  const fieldOptions: DropdownOption[] = [
+    { value: '', label: 'Select field', icon: <Map size={16} /> },
+    ...fields.map((field) => ({
+      value: field.id,
+      label: field.name,
+      icon: <Map size={16} />,
+    })),
+  ];
+
+  const plantTypeOptions: DropdownOption[] = [
+    { value: '', label: 'Custom', icon: <Leaf size={16} /> },
+    ...plantTypes.map((type) => ({
+      value: type.id,
+      label: type.name,
+      icon: <Leaf size={16} />,
+    })),
+  ];
+
+  const healthStatusOptions: DropdownOption[] = [
+    { value: 'healthy', label: 'Healthy', icon: <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} /> },
+    { value: 'observation', label: 'Needs Observation', icon: <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#f59e0b', display: 'inline-block' }} /> },
+    { value: 'sick', label: 'Sick', icon: <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#ef4444', display: 'inline-block' }} /> },
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -130,37 +157,21 @@ export function PlantForm({ plant, onClose }: PlantFormProps) {
           </div>
 
           <div className={styles.row}>
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Field *</label>
-              <select
-                value={formData.fieldId}
-                onChange={(e) => setFormData({ ...formData, fieldId: e.target.value })}
-                className={styles.select}
-              >
-                <option value="">Select field</option>
-                {fields.map((field) => (
-                  <option key={field.id} value={field.id}>
-                    {field.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <Dropdown
+              label="Field *"
+              options={fieldOptions}
+              value={formData.fieldId}
+              onChange={(value) => setFormData({ ...formData, fieldId: value })}
+              placeholder="Select field"
+            />
 
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Plant Type</label>
-              <select
-                value={formData.typeId}
-                onChange={(e) => setFormData({ ...formData, typeId: e.target.value })}
-                className={styles.select}
-              >
-                <option value="">Custom</option>
-                {plantTypes.map((type) => (
-                  <option key={type.id} value={type.id}>
-                    {type.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <Dropdown
+              label="Plant Type"
+              options={plantTypeOptions}
+              value={formData.typeId}
+              onChange={(value) => setFormData({ ...formData, typeId: value })}
+              placeholder="Custom"
+            />
           </div>
 
           <div className={styles.row}>
@@ -190,18 +201,13 @@ export function PlantForm({ plant, onClose }: PlantFormProps) {
           </div>
 
           <div className={styles.row}>
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Health Status</label>
-              <select
-                value={formData.healthStatus}
-                onChange={(e) => setFormData({ ...formData, healthStatus: e.target.value as PlantHealthStatus })}
-                className={styles.select}
-              >
-                <option value="healthy">Healthy</option>
-                <option value="observation">Needs Observation</option>
-                <option value="sick">Sick</option>
-              </select>
-            </div>
+            <Dropdown
+              label="Health Status"
+              options={healthStatusOptions}
+              value={formData.healthStatus}
+              onChange={(value) => setFormData({ ...formData, healthStatus: value as PlantHealthStatus })}
+              placeholder="Select status"
+            />
 
             <div className={styles.formGroup}>
               <label className={styles.label}>Variety</label>

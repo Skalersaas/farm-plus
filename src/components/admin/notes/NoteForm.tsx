@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Droplets, Leaf, Bug, Pill, Sun, Wrench, Eye, Map } from 'lucide-react';
 import { useUIStore, useFieldsStore, usePlantsStore } from '../../../stores';
+import { Dropdown } from '../../ui';
+import type { DropdownOption } from '../../ui';
 import type { Note, NoteType } from '../../../types';
 import styles from './NoteForm.module.css';
 
@@ -8,6 +10,18 @@ interface NoteFormProps {
   note?: Note | null;
   onClose: () => void;
 }
+
+const noteTypeIcons: Record<NoteType, React.ReactNode> = {
+  observation: <Eye size={16} />,
+  watering: <Droplets size={16} />,
+  growth: <Leaf size={16} />,
+  pest: <Bug size={16} />,
+  disease: <Pill size={16} />,
+  fertilizer: <Pill size={16} />,
+  weather: <Sun size={16} />,
+  work: <Wrench size={16} />,
+  harvest: <Leaf size={16} />,
+};
 
 const noteTypes: { value: NoteType; label: string }[] = [
   { value: 'observation', label: 'Observation' },
@@ -50,6 +64,31 @@ export function NoteForm({ note, onClose }: NoteFormProps) {
       });
     }
   }, [note]);
+
+  // Build dropdown options
+  const noteTypeOptions: DropdownOption[] = noteTypes.map((type) => ({
+    value: type.value,
+    label: type.label,
+    icon: noteTypeIcons[type.value],
+  }));
+
+  const fieldOptions: DropdownOption[] = [
+    { value: '', label: 'None', icon: <Map size={16} /> },
+    ...fields.map((field) => ({
+      value: field.id,
+      label: field.name,
+      icon: <Map size={16} />,
+    })),
+  ];
+
+  const plantOptions: DropdownOption[] = [
+    { value: '', label: 'None', icon: <Leaf size={16} /> },
+    ...plants.map((plant) => ({
+      value: plant.id,
+      label: plant.name,
+      icon: <Leaf size={16} />,
+    })),
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -109,20 +148,13 @@ export function NoteForm({ note, onClose }: NoteFormProps) {
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.row}>
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Type *</label>
-              <select
-                value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value as NoteType })}
-                className={styles.select}
-              >
-                {noteTypes.map((type) => (
-                  <option key={type.value} value={type.value}>
-                    {type.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <Dropdown
+              label="Type *"
+              options={noteTypeOptions}
+              value={formData.type}
+              onChange={(value) => setFormData({ ...formData, type: value as NoteType })}
+              placeholder="Select type"
+            />
 
             <div className={styles.formGroup}>
               <label className={styles.label}>Title</label>
@@ -148,37 +180,21 @@ export function NoteForm({ note, onClose }: NoteFormProps) {
           </div>
 
           <div className={styles.row}>
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Related Field</label>
-              <select
-                value={formData.fieldId}
-                onChange={(e) => setFormData({ ...formData, fieldId: e.target.value })}
-                className={styles.select}
-              >
-                <option value="">None</option>
-                {fields.map((field) => (
-                  <option key={field.id} value={field.id}>
-                    {field.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <Dropdown
+              label="Related Field"
+              options={fieldOptions}
+              value={formData.fieldId}
+              onChange={(value) => setFormData({ ...formData, fieldId: value })}
+              placeholder="None"
+            />
 
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Related Plant</label>
-              <select
-                value={formData.plantId}
-                onChange={(e) => setFormData({ ...formData, plantId: e.target.value })}
-                className={styles.select}
-              >
-                <option value="">None</option>
-                {plants.map((plant) => (
-                  <option key={plant.id} value={plant.id}>
-                    {plant.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <Dropdown
+              label="Related Plant"
+              options={plantOptions}
+              value={formData.plantId}
+              onChange={(value) => setFormData({ ...formData, plantId: value })}
+              placeholder="None"
+            />
           </div>
 
           <div className={styles.formGroup}>

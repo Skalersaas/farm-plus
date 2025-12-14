@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Search, Leaf, Droplets, Eye, Edit } from 'lucide-react';
+import { Plus, Search, Leaf, Droplets, Eye, Edit, Map, Filter } from 'lucide-react';
 import { usePlantsStore, useFieldsStore } from '../../../stores';
+import { Dropdown } from '../../ui';
+import type { DropdownOption } from '../../ui';
 import { PlantForm } from './PlantForm';
 import { formatDistanceToNow } from 'date-fns';
 import type { Plant, WateringStatus } from '../../../types';
@@ -21,6 +23,14 @@ const wateringStatusStyles: Record<WateringStatus, string> = {
   critical: styles.critical,
 };
 
+const statusOptions: DropdownOption[] = [
+  { value: '', label: 'All Status', icon: <Filter size={16} /> },
+  { value: 'watered', label: 'Watered', icon: <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} /> },
+  { value: 'due_soon', label: 'Due Soon', icon: <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#f59e0b', display: 'inline-block' }} /> },
+  { value: 'overdue', label: 'Overdue', icon: <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#f97316', display: 'inline-block' }} /> },
+  { value: 'critical', label: 'Critical', icon: <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#ef4444', display: 'inline-block' }} /> },
+];
+
 export function PlantsList() {
   const { plants, waterPlant } = usePlantsStore();
   const { fields, getFieldById } = useFieldsStore();
@@ -29,6 +39,16 @@ export function PlantsList() {
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [showForm, setShowForm] = useState(false);
   const [editingPlant, setEditingPlant] = useState<Plant | null>(null);
+
+  // Build field options
+  const fieldOptions: DropdownOption[] = [
+    { value: '', label: 'All Fields', icon: <Map size={16} /> },
+    ...fields.map((field) => ({
+      value: field.id,
+      label: field.name,
+      icon: <Map size={16} />,
+    })),
+  ];
 
   const filteredPlants = plants.filter((plant) => {
     const matchesSearch = plant.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -72,30 +92,19 @@ export function PlantsList() {
             />
           </div>
 
-          <select
+          <Dropdown
+            options={fieldOptions}
             value={fieldFilter}
-            onChange={(e) => setFieldFilter(e.target.value)}
-            className={styles.filterSelect}
-          >
-            <option value="">All Fields</option>
-            {fields.map((field) => (
-              <option key={field.id} value={field.id}>
-                {field.name}
-              </option>
-            ))}
-          </select>
+            onChange={setFieldFilter}
+            placeholder="All Fields"
+          />
 
-          <select
+          <Dropdown
+            options={statusOptions}
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className={styles.filterSelect}
-          >
-            <option value="">All Status</option>
-            <option value="watered">Watered</option>
-            <option value="due_soon">Due Soon</option>
-            <option value="overdue">Overdue</option>
-            <option value="critical">Critical</option>
-          </select>
+            onChange={setStatusFilter}
+            placeholder="All Status"
+          />
         </div>
 
         <div className={styles.actions}>

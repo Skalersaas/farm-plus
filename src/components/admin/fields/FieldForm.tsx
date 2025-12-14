@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Layers } from 'lucide-react';
 import { useFieldsStore } from '../../../stores';
+import { Dropdown } from '../../ui';
+import type { DropdownOption } from '../../ui';
 import type { Field, FieldStatus, SoilType } from '../../../types';
 import styles from './FieldForm.module.css';
 
@@ -36,6 +38,23 @@ export function FieldForm({ field, onClose }: FieldFormProps) {
       });
     }
   }, [field]);
+
+  // Dropdown options
+  const statusOptions: DropdownOption[] = [
+    { value: 'healthy', label: 'Healthy', icon: <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} /> },
+    { value: 'attention', label: 'Needs Attention', icon: <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#f59e0b', display: 'inline-block' }} /> },
+    { value: 'critical', label: 'Critical', icon: <span style={{ width: 12, height: 12, borderRadius: '50%', background: '#ef4444', display: 'inline-block' }} /> },
+  ];
+
+  const soilTypeOptions: DropdownOption[] = [
+    { value: '', label: 'Select soil type', icon: <Layers size={16} /> },
+    { value: 'clay', label: 'Clay', icon: <Layers size={16} /> },
+    { value: 'sandy', label: 'Sandy', icon: <Layers size={16} /> },
+    { value: 'loam', label: 'Loam', icon: <Layers size={16} /> },
+    { value: 'silt', label: 'Silt', icon: <Layers size={16} /> },
+    { value: 'peat', label: 'Peat', icon: <Layers size={16} /> },
+    { value: 'chalk', label: 'Chalk', icon: <Layers size={16} /> },
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,18 +136,13 @@ export function FieldForm({ field, onClose }: FieldFormProps) {
               />
             </div>
 
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Status</label>
-              <select
-                value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value as FieldStatus })}
-                className={styles.select}
-              >
-                <option value="healthy">Healthy</option>
-                <option value="attention">Needs Attention</option>
-                <option value="critical">Critical</option>
-              </select>
-            </div>
+            <Dropdown
+              label="Status"
+              options={statusOptions}
+              value={formData.status}
+              onChange={(value) => setFormData({ ...formData, status: value as FieldStatus })}
+              placeholder="Select status"
+            />
           </div>
 
           <div className={styles.formGroup}>
@@ -142,22 +156,13 @@ export function FieldForm({ field, onClose }: FieldFormProps) {
             />
           </div>
 
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Soil Type</label>
-            <select
-              value={formData.soilType}
-              onChange={(e) => setFormData({ ...formData, soilType: e.target.value as SoilType })}
-              className={styles.select}
-            >
-              <option value="">Select soil type</option>
-              <option value="clay">Clay</option>
-              <option value="sandy">Sandy</option>
-              <option value="loam">Loam</option>
-              <option value="silt">Silt</option>
-              <option value="peat">Peat</option>
-              <option value="chalk">Chalk</option>
-            </select>
-          </div>
+          <Dropdown
+            label="Soil Type"
+            options={soilTypeOptions}
+            value={formData.soilType}
+            onChange={(value) => setFormData({ ...formData, soilType: value as SoilType })}
+            placeholder="Select soil type"
+          />
 
           <div className={styles.formGroup}>
             <label className={styles.label}>Notes</label>
